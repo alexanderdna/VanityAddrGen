@@ -22,6 +22,10 @@ keyword in the middle of the address, for practical reasons.
 The result will be the seed and a Nano address. Since Nano and Banano
 have the same architecture, you can use the seed for both coins.
 
+Disclaimer: running this application can be a CPU intensive task.
+By using this application, you agree that the author will not be
+held responsible should there be any loss or damages.
+
 ## Build
 
 This project uses .NET 5 and can be built with Visual Studio 2019.

@@ -163,9 +163,10 @@ namespace VanityAddrGen
 
             var cancellation = new CancellationTokenSource();
             var jobs = new Job[jobCount];
+            int randomSeed = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds;
             for (int i = 0, c = jobs.Length; i < c; ++i)
             {
-                jobs[i] = new Job(keyword, DateTime.UtcNow.Millisecond + i, cancellation.Token);
+                jobs[i] = new Job(keyword, randomSeed + i, cancellation.Token);
             }
 
             for (int i = 0, c = jobs.Length; i < c; ++i)
