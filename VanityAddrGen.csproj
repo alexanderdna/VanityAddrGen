@@ -8,10 +8,11 @@
     <Description>Generates addresses for Nano and Banano cryptocurrencies.</Description>
     <Copyright />
     <Company>alexanderdna</Company>
-    <Version>1.0.1</Version>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Cloo.clSharp" Version="1.0.1" />
     <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="5.0.4" />
     <PackageReference Include="SauceControl.Blake2Fast" Version="2.0.0" />
   </ItemGroup>
