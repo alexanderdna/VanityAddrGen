@@ -10,7 +10,7 @@ that contains a keyword given by the user.
 This is an interactive console application. It doesn't require any
 command line arguments.
 
-It will ask you to enter the number of CPU threads to use, then the
+It will ask you to enter the number of CPU/GPU threads to use, then the
 keyword you want to appear in the address. After that it will run
 until an address is found. Every second it will report how many
 attempts it has made to find an address.
@@ -19,7 +19,7 @@ If an address is found, the keyword will appear at the beginning or
 the end of it. The application currently doesn't support having a
 keyword in the middle of the address, for practical reasons.
 
-The result will be the seed and a Nano address. Since Nano and Banano
+The result will be the seed and a Banano address. Since Nano and Banano
 have the same architecture, you can use the seed for both coins.
 
 Disclaimer: running this application can be a CPU intensive task.
@@ -34,6 +34,7 @@ This project uses .NET 5 and can be built with Visual Studio 2019.
 
 All dependencies are managed in NuGet.
 
+* Cloo.clSharp
 * Microsoft.Extensions.ObjectPool
 * [Blake2Fast](https://github.com/saucecontrol/Blake2Fast)
 
