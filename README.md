@@ -43,6 +43,12 @@ All dependencies are managed in NuGet.
 This is a hobby project. You can fork it or make pull requests. I will
 try to process pull requests but I can't promise.
 
+## Special Thanks
+
+I would like to thank the author(s) of the OpenCL code that I copied from
+https://github.com/BananoCoin/banano-vanity. GPU support is impossible
+without your code.
+
 ## Donate
 
 You don't have to. But if you do, I really appreciate that and will pay it forward.
