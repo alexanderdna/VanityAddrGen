@@ -8,7 +8,7 @@ that contains a keyword given by the user.
 ## Usage
 
 This application doesn't require any command line arguments. Just type in
-the keyword you want and press Enter. The application will performs
+the keyword you want and press Enter. The application will perform
 calculations to find a suitable address.
 
 Configuration is loaded from `config.txt` whose content may look
