@@ -5,8 +5,8 @@ namespace VanityAddrGen
 {
     public sealed class CpuJob : Job
     {
-        public CpuJob(string keyword, int randomSeed, CancellationToken cancellationToken)
-            : base(keyword, randomSeed, cancellationToken)
+        public CpuJob(Params @params)
+            : base(@params)
         {
         }
 
@@ -16,8 +16,20 @@ namespace VanityAddrGen
             string prefix2 = string.Concat(AddressPrefix, "1", keyword);
             string suffix1 = keyword;
 
-            byte[] publicKey = new byte[32];
+            byte[] seedBytes = new byte[32];
+            byte[] secretBytes = new byte[32];
+            byte[] indexBytes = new byte[4];
+            byte[] publicKeyBytes = new byte[32];
+            byte[] checksumBytes = new byte[5];
+
             byte[] tmp = new byte[64];
+
+            AddressBuffer addressBuffer = new(AddressPrefix.Length + 60);
+
+            bool canMatchPrefix = this.canMatchPrefix;
+            bool canMatchSuffix = this.canMatchSuffix;
+            CancellationToken cancellationToken = this.cancellationToken;
+            System.Action<string, string> resultCallback = this.resultCallback;
 
             addressBuffer.Append(AddressPrefix);
             while (!cancellationToken.IsCancellationRequested)
@@ -30,22 +42,33 @@ namespace VanityAddrGen
                 hasher.Finish(secretBytes);
 
                 Chaos.NaCl.Internal.Ed25519Ref10.Ed25519Operations.crypto_public_key(
-                    secretBytes, 0, publicKey, 0, tmp);
+                    secretBytes, 0, publicKeyBytes, 0, tmp);
 
-                Blake2b.ComputeAndWriteHash(5, publicKey, checksumBytes);
+                Blake2b.ComputeAndWriteHash(5, publicKeyBytes, checksumBytes);
                 Reverse(checksumBytes);
 
-                NanoBase32(publicKey, ref addressBuffer);
+                NanoBase32(publicKeyBytes, ref addressBuffer);
                 NanoBase32(checksumBytes, ref addressBuffer);
 
-                if (addressBuffer.StartsWith(prefix1)
-                    || addressBuffer.StartsWith(prefix2)
-                    || addressBuffer.EndsWith(suffix1))
+                bool isMatched = false;
+                if (canMatchPrefix)
+                    isMatched = addressBuffer.StartsWith(prefix1) || addressBuffer.StartsWith(prefix2);
+                if (!isMatched && canMatchSuffix)
+                    isMatched = addressBuffer.EndsWith(suffix1);
+
+                if (isMatched)
                 {
                     var address = addressBuffer.ToString();
-                    FoundSeed = HexUtils.HexFromByteArray(seedBytes);
-                    FoundAddress = address;
-                    break;
+                    if (resultCallback != null)
+                    {
+                        resultCallback.Invoke(HexUtils.HexFromByteArray(seedBytes), address);
+                    }
+                    else
+                    {
+                        FoundSeed = HexUtils.HexFromByteArray(seedBytes);
+                        FoundAddress = address;
+                        break;
+                    }
                 }
 
                 ++attempts;

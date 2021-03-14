@@ -7,22 +7,44 @@ that contains a keyword given by the user.
 
 ## Usage
 
-This is an interactive console application. It doesn't require any
-command line arguments.
+This application doesn't require any command line arguments. Just type in
+the keyword you want and press Enter. The application will performs
+calculations to find a suitable address.
 
-It will ask you to enter the number of CPU/GPU threads to use, then the
-keyword you want to appear in the address. After that it will run
-until an address is found. Every second it will report how many
-attempts it has made to find an address.
+Configuration is loaded from `config.txt` whose content may look
+like the following:
 
-If an address is found, the keyword will appear at the beginning or
-the end of it. The application currently doesn't support having a
-keyword in the middle of the address, for practical reasons.
+```
+# This is configuration file for VanityAddrGen
 
-The result will be the seed and a Banano address. Since Nano and Banano
-have the same architecture, you can use the seed for both coins.
+# cpu OR gpu OR cpu+gpu
+hardware=gpu
 
-Disclaimer: running this application can be a CPU intensive task.
+# prefix OR suffix OR prefix+suffix
+match=prefix
+
+# 1 to 8
+cpu_threads=1
+
+# 1 to 100000
+gpu_threads=100000
+
+# platform index, usually 0 but can be higher
+gpu_platform=0
+
+# 0 for continously logging found addresses
+# 1 for stopping when first address is found
+non_stop=1
+```
+
+For `non_stop`, if you set it to 0, the application will stops when it
+finds 1 address and will show that address in the window. If you set it
+to 1, the application will not stop when finding an address. It will show
+the address and append it to a `result-<your keyword>.txt` file.
+
+### Disclaimer
+
+Running this application can be a CPU/GPU intensive task.
 By using this application, you agree that the author will not be
 held responsible should there be any loss or damages.
 

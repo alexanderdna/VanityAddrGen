@@ -1,0 +1,21 @@
+# This is configuration template file.
+# Renaming to config.txt and place it in the same folder as the application file.
+
+# cpu OR gpu OR cpu+gpu
+hardware=gpu
+
+# prefix OR suffix OR prefix+suffix
+match=prefix
+
+# 1 to 8
+cpu_threads=1
+
+# 1 to 100000
+gpu_threads=100000
+
+# platform index, usually 0 but can be 1 or higher, depending on your machine
+gpu_platform=0
+
+# 0 for continously logging found addresses
+# 1 for stopping when first address is found
+non_stop=1

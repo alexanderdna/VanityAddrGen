@@ -7,14 +7,22 @@ namespace VanityAddrGen
 {
     public sealed class GpuJob : Job
     {
+        public new sealed class Params : Job.Params
+        {
+            public int WorkSize;
+            public int PlatformIndex;
+        }
+
         public const int MaxWorkSize = 100_000;
 
         private readonly int workSize;
+        private readonly int platformIndex;
 
-        public GpuJob(int workSize, string keyword, int randomSeed, CancellationToken cancellationToken)
-            : base(keyword, randomSeed, cancellationToken)
+        public GpuJob(Params @params)
+            : base(@params)
         {
-            this.workSize = workSize;
+            workSize = @params.WorkSize;
+            platformIndex = @params.PlatformIndex;
         }
 
         public override void Run(object? arg)
@@ -29,11 +37,17 @@ namespace VanityAddrGen
             byte[] bigChecksumBytes = new byte[5 * workSize];
             byte[] bigSeedBytes = new byte[31 + workSize];
 
+            AddressBuffer addressBuffer = new(AddressPrefix.Length + 60);
+
+            bool canMatchPrefix = this.canMatchPrefix;
+            bool canMatchSuffix = this.canMatchSuffix;
+            CancellationToken cancellationToken = this.cancellationToken;
+
             GCHandle hPublicKey = GCHandle.Alloc(bigPublicKeyBytes, GCHandleType.Pinned);
             GCHandle hChecksum = GCHandle.Alloc(bigChecksumBytes, GCHandleType.Pinned);
             GCHandle hSeed = GCHandle.Alloc(bigSeedBytes, GCHandleType.Pinned);
 
-            ComputePlatform platform = ComputePlatform.Platforms[0];
+            ComputePlatform platform = ComputePlatform.Platforms[platformIndex];
             ComputeContext context = new(
                 ComputeDeviceTypes.Gpu,
                 new ComputeContextPropertyList(platform),
@@ -67,7 +81,8 @@ namespace VanityAddrGen
                 queue.Read(argChecksum, true, 0, bigChecksumBytes.Length, hChecksum.AddrOfPinnedObject(), null);
                 queue.Finish();
 
-                for (int i = 0; i < workSize && FoundSeed == null; ++i)
+                string foundSeed = null;
+                for (int i = 0; i < workSize; ++i)
                 {
                     ArraySegment<byte> seed = new(bigSeedBytes, i, 32);
                     ArraySegment<byte> publicKey = new(bigPublicKeyBytes, i * 32, 32);
@@ -77,20 +92,35 @@ namespace VanityAddrGen
                     NanoBase32(publicKey, ref addressBuffer);
                     NanoBase32(checksum, ref addressBuffer);
 
-                    if (addressBuffer.StartsWith(prefix1)
-                        || addressBuffer.StartsWith(prefix2)
-                        || addressBuffer.EndsWith(suffix1))
+                    bool isMatched = false;
+                    if (canMatchPrefix)
+                        isMatched = addressBuffer.StartsWith(prefix1) || addressBuffer.StartsWith(prefix2);
+                    if (!isMatched && canMatchSuffix)
+                        isMatched = addressBuffer.EndsWith(suffix1);
+
+                    if (isMatched)
                     {
                         var address = addressBuffer.ToString();
-                        FoundSeed = HexUtils.HexFromByteArray(seed);
-                        FoundAddress = address;
+                        if (resultCallback != null)
+                        {
+                            resultCallback.Invoke(HexUtils.HexFromByteArray(seed), address);
+                        }
+                        else
+                        {
+                            foundSeed = HexUtils.HexFromByteArray(seed);
+                            FoundSeed = foundSeed;
+                            FoundAddress = address;
 
-                        attempts += i;
-                        break;
+                            attempts += i;
+                            break;
+                        }
                     }
 
                     addressBuffer.Length = AddressPrefix.Length;
                 }
+
+                if (foundSeed != null)
+                    break;
 
                 attempts += workSize;
             }

@@ -104,16 +104,6 @@ namespace VanityAddrGen
             }
         }
 
-        public static void Reverse(byte[] arr)
-        {
-            Span<byte> tmp = stackalloc byte[arr.Length];
-            for (int i = 0, c = arr.Length; i < c; ++i)
-            {
-                tmp[i] = arr[c - i - 1];
-            }
-            tmp.CopyTo(arr);
-        }
-
         public static void Reverse(ArraySegment<byte> arr)
         {
             Span<byte> tmp = stackalloc byte[arr.Count];
@@ -124,32 +114,39 @@ namespace VanityAddrGen
             tmp.CopyTo(arr);
         }
 
-        protected string keyword;
-        protected CancellationToken cancellationToken;
-        protected Random random;
-        protected byte[] seedBytes;
-        protected byte[] secretBytes;
-        protected byte[] indexBytes;
-        protected byte[] checksumBytes;
+        public class Params
+        {
+            public string Keyword;
+            public bool CanMatchPrefix;
+            public bool CanMatchSuffix;
+            public int RandomSeed;
+            public CancellationToken CancellationToken;
+            public Action<string, string> ResultCallback;
+        }
+
+        protected readonly string keyword;
+        protected readonly bool canMatchPrefix;
+        protected readonly bool canMatchSuffix;
+        protected readonly Random random;
+        protected readonly CancellationToken cancellationToken;
+        protected readonly Action<string, string> resultCallback;
+
         protected long attempts;
-        protected AddressBuffer addressBuffer;
 
         public long Attempts => attempts;
 
         public string FoundSeed { get; protected set; }
         public string FoundAddress { get; protected set; }
 
-        public Job(string keyword, int randomSeed, CancellationToken cancellationToken)
+        public Job(Params @params)
         {
-            this.keyword = keyword;
-            this.cancellationToken = cancellationToken;
-            random = new Random(randomSeed);
-            seedBytes = new byte[32];
-            secretBytes = new byte[32];
-            indexBytes = new byte[4];
-            checksumBytes = new byte[5];
+            keyword = @params.Keyword;
+            canMatchPrefix = @params.CanMatchPrefix;
+            canMatchSuffix = @params.CanMatchSuffix;
+            random = new Random(@params.RandomSeed);
+            cancellationToken = @params.CancellationToken;
+            resultCallback = @params.ResultCallback;
             attempts = 0;
-            addressBuffer = new AddressBuffer(AddressPrefix.Length + 60);
         }
 
         public abstract void Run(object? arg);
