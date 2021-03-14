@@ -13,7 +13,7 @@ namespace VanityAddrGen
             public int PlatformIndex;
         }
 
-        public const int MaxWorkSize = 100_000;
+        public const int MaxWorkSize = int.MaxValue;
 
         private readonly int workSize;
         private readonly int platformIndex;
