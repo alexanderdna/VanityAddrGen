@@ -137,7 +137,7 @@ namespace VanityAddrGen
                     break;
 
                 case ConfigFile.Hardware.Both:
-                    jobs = new Job[configFile.CpuThreads];
+                    jobs = new Job[1 + configFile.CpuThreads];
                     jobs[0] = new GpuJob(jobParams);
                     for (int i = 0, c = configFile.CpuThreads; i < c; ++i)
                     {

@@ -32,8 +32,8 @@ gpu_threads=100000
 # platform index, usually 0 but can be higher
 gpu_platform=0
 
-# 0 for continously logging found addresses
-# 1 for stopping when first address is found
+# 0 for stopping when first address is found
+# 1 for continously logging found addresses
 non_stop=1
 ```
 
