@@ -71,6 +71,28 @@ namespace VanityAddrGen
 
             Console.WriteLine();
 
+            if (configFile.JobHardware is ConfigFile.Hardware.GPU or ConfigFile.Hardware.Both)
+            {
+                byte[] testSeedBytes = new byte[32];
+                new Random().NextBytes(testSeedBytes);
+
+                var cpuAddr = SeedTest.TestCpu(testSeedBytes);
+                var gpuAddr = SeedTest.TestGpu(testSeedBytes, configFile.GpuPlatformIndex);
+
+                if (cpuAddr != gpuAddr)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("ERROR: Selected GPU seems to produce invalid addresses.");
+                    Console.WriteLine("       Please try some of the following methods:");
+                    Console.WriteLine("  1. Use a different GPU platform index, if available.");
+                    Console.WriteLine("  2. Use a different number of GPU threads.");
+                    Console.WriteLine("  3. Use CPU instead.");
+
+                    Console.ReadLine();
+                    return;
+                }
+            }
+
             string keyword;
             while (true)
             {

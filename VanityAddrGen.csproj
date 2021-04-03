@@ -8,7 +8,7 @@
     <Description>Generates addresses for Nano and Banano cryptocurrencies.</Description>
     <Copyright />
     <Company>alexanderdna</Company>
-    <Version>1.1.2</Version>
+    <Version>1.1.3</Version>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,5 +1,8 @@
 ﻿# Changelog
 
+## v1.1.3
+- Add a test to make sure GPU produces valid addresses.
+
 ## v1.1.2
 - Fix crash bug in CPU+GPU mode.
 - Fix wrong comments in config template.
