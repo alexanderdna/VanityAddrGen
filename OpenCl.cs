@@ -291,7 +291,12 @@ static int blake2b_update(blake2b_state* S, const uchar*in, ulong inlen)
             ucharcpy(S->buf + left, in, fill); // Fill buffer
             S->buflen += fill;
             blake2b_increment_counter(S, BLAKE2B_BLOCKBYTES);
-            blake2b_compress(S, S->buf); // Compress
+            uchar tmp_buf[2 * BLAKE2B_BLOCKBYTES];
+            for (int j = 0; j < (2 * BLAKE2B_BLOCKBYTES); ++j) {
+                tmp_buf[j] = S->buf[j];
+            }
+            blake2b_compress(S, tmp_buf); // Compress
+            //blake2b_compress(S, S->buf); // Compress
             ucharcpy(S->buf, S->buf + BLAKE2B_BLOCKBYTES, BLAKE2B_BLOCKBYTES); // Shift buffer left
             S->buflen -= BLAKE2B_BLOCKBYTES;
       in += fill;
@@ -316,7 +321,12 @@ static int blake2b_final(blake2b_state* S, uchar*out, uchar outlen)
     if (S->buflen > BLAKE2B_BLOCKBYTES)
     {
         blake2b_increment_counter(S, BLAKE2B_BLOCKBYTES);
-        blake2b_compress(S, S->buf);
+        uchar tmptmp_buf[2 * BLAKE2B_BLOCKBYTES];
+        for (int j = 0; j < (2 * BLAKE2B_BLOCKBYTES); ++j) {
+            tmptmp_buf[j] = S->buf[j];
+        }
+        blake2b_compress(S, tmptmp_buf);
+        //blake2b_compress(S, S->buf);
         S->buflen -= BLAKE2B_BLOCKBYTES;
         ucharcpy(S->buf, S->buf + BLAKE2B_BLOCKBYTES, S->buflen);
     }
@@ -330,7 +340,12 @@ static int blake2b_final(blake2b_state* S, uchar*out, uchar outlen)
 
     blake2b_set_lastblock(S);
     ucharset(S->buf + S->buflen, 0, 2 * BLAKE2B_BLOCKBYTES - S->buflen); /* Padding */
-    blake2b_compress(S, S->buf);
+    uchar tmp_buf[2 * BLAKE2B_BLOCKBYTES];
+    for (int j = 0; j < (2 * BLAKE2B_BLOCKBYTES); ++j) {
+        tmp_buf[j] = S->buf[j];
+    }
+    blake2b_compress(S, tmp_buf);
+    //blake2b_compress(S, S->buf);
 
     for (int i = 0; i < 8; ++i) /* Output full hash to temp buffer */
         store64(buffer + sizeof(S->h[i]) * i, S->h[i] );
