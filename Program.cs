@@ -121,7 +121,6 @@ namespace VanityAddrGen
             Console.WriteLine();
 
             var cancellation = new CancellationTokenSource();
-            int randomSeed = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds;
 
             var jobParams = new GpuJob.Params
             {
@@ -130,7 +129,6 @@ namespace VanityAddrGen
                 Keyword = keyword,
                 CanMatchPrefix = configFile.AddressMatching is ConfigFile.MatchingPolicy.Prefix or ConfigFile.MatchingPolicy.Both,
                 CanMatchSuffix = configFile.AddressMatching is ConfigFile.MatchingPolicy.Suffix or ConfigFile.MatchingPolicy.Both,
-                RandomSeed = randomSeed,
                 CancellationToken = cancellation.Token,
             };
 
@@ -147,7 +145,6 @@ namespace VanityAddrGen
                     jobs = new Job[configFile.CpuThreads];
                     for (int i = 0, c = configFile.CpuThreads; i < c; ++i)
                     {
-                        jobParams.RandomSeed = randomSeed + i;
                         jobs[i] = new CpuJob(jobParams);
                     }
                     break;
@@ -163,7 +160,6 @@ namespace VanityAddrGen
                     jobs[0] = new GpuJob(jobParams);
                     for (int i = 0, c = configFile.CpuThreads; i < c; ++i)
                     {
-                        jobParams.RandomSeed = randomSeed + i + 1;
                         jobs[i + 1] = new CpuJob(jobParams);
                     }
                     break;

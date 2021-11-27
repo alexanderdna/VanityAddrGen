@@ -34,7 +34,7 @@ namespace VanityAddrGen
             addressBuffer.Append(AddressPrefix);
             while (!cancellationToken.IsCancellationRequested)
             {
-                random.NextBytes(seedBytes);
+                random.GetBytes(seedBytes);
 
                 var hasher = Blake2b.CreateIncrementalHasher(32);
                 hasher.Update(seedBytes);

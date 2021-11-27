@@ -67,7 +67,16 @@ namespace VanityAddrGen
                 OpenCl.Curve25519,
                 OpenCl.Entry,
             });
-            program.Build(null, null, null, IntPtr.Zero);
+            try
+            {
+                program.Build(null, null, null, IntPtr.Zero);
+            }
+            catch
+            {
+                var buildLog = program.GetBuildLog(context.Devices[0]);
+                Console.WriteLine(buildLog);
+                Console.ReadLine();
+            }
             ComputeKernel kernel = program.CreateKernel("generate_pubkey");
             ComputeCommandQueue queue = new(context, context.Devices[0], ComputeCommandQueueFlags.None);
 

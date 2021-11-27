@@ -71,7 +71,7 @@ namespace VanityAddrGen
             addressBuffer.Append(AddressPrefix);
             while (!cancellationToken.IsCancellationRequested)
             {
-                random.NextBytes(bigSeedBytes);
+                random.GetBytes(bigSeedBytes);
                 queue.Write(argSeed, true, 0, bigSeedBytes.Length, hSeed.AddrOfPinnedObject(), null);
                 kernel.SetMemoryArgument(0, argPublicKey);
                 kernel.SetMemoryArgument(1, argChecksum);

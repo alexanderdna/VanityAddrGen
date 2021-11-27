@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Security.Cryptography;
 
 namespace VanityAddrGen
 {
@@ -119,7 +120,6 @@ namespace VanityAddrGen
             public string Keyword;
             public bool CanMatchPrefix;
             public bool CanMatchSuffix;
-            public int RandomSeed;
             public CancellationToken CancellationToken;
             public Action<string, string> ResultCallback;
         }
@@ -127,7 +127,7 @@ namespace VanityAddrGen
         protected readonly string keyword;
         protected readonly bool canMatchPrefix;
         protected readonly bool canMatchSuffix;
-        protected readonly Random random;
+        protected readonly RandomNumberGenerator random;
         protected readonly CancellationToken cancellationToken;
         protected readonly Action<string, string> resultCallback;
 
@@ -143,7 +143,7 @@ namespace VanityAddrGen
             keyword = @params.Keyword;
             canMatchPrefix = @params.CanMatchPrefix;
             canMatchSuffix = @params.CanMatchSuffix;
-            random = new Random(@params.RandomSeed);
+            random = RandomNumberGenerator.Create();
             cancellationToken = @params.CancellationToken;
             resultCallback = @params.ResultCallback;
             attempts = 0;
