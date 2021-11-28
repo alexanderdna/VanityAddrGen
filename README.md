@@ -82,8 +82,8 @@ without your code.
 
 ## Donate
 
-You don't have to. But if you do, I really appreciate that and will pay it forward.
+Banano: `ban_3cintamrbeqg3qspt146cn7cxu69mwpnfdqzdubicki1u1d5exdhbp651cy5`
 
-Banano: `ban_3cintamnxp58wmqkto8d84ph6cbchsmera3ykc36qsdptqgcbfb64cwi4crf`
+Nano: `nano_3cintamrbeqg3qspt146cn7cxu69mwpnfdqzdubicki1u1d5exdhbp651cy5`
 
-Nano: `nano_3cintamnxp58wmqkto8d84ph6cbchsmera3ykc36qsdptqgcbfb64cwi4crf`
+Thank you!
